@@ -1,0 +1,261 @@
+<head>
+ {% block javascript %}  
+<script src="http://code.jquery.com/jquery-1.8.2.js"></script>
+<script src="http://code.jquery.com/ui/1.9.0/jquery-ui.js"></script>
+<script>
+$(document).ready(function(){
+
+
+	$("#tabs").tabs();
+	$("#tabs-1").click();
+
+	$(".desc").hide();
+	$(".Exercls").hide();
+	$(".descEx").hide();
+        $(".titleExhdr").click(function()
+	{
+		$(".descEx",$(this).parent()).toggle();
+	});
+	$(".titlehdr").click(function()
+	{
+		$(".desc",$(this).parent()).toggle();
+	});
+	$(".modulehdr").click(function()
+	{
+	$(".desc",$(this).parent()).toggle();
+	$(".Exercls",$(this).parent()).toggle();
+//	$(".arrow",$(this).parent()).toggleClass("collapsed");
+//	$(".arrow",$(this).parent()).toggleClass("expanded");
+
+	});
+
+	$(".arrow").click(function()
+	{
+		$(".Exercls",$(this).parent()).toggle();
+	//	$(this).toggleClass("collapsed");
+	//	$(this).toggleClass("expanded");
+		
+	});
+
+
+});
+</script> 
+{% endblock %}
+<style>
+.checktree li { list-style-type: none;} 
+.ProfExercls li { list-style-type: none;}
+.nonProfExercls li { list-style-type: none;} 
+.titlehdr { cursor: pointer; }
+.modulehdr { cursor: pointer; }
+.titleExhdr { cursor: pointer; }
+.arrow {
+cursor: pointer;
+position: absolute;
+margin-left: -20px;
+margin-top: 4px;
+width: 0; 
+height: 0; 
+}
+.collapsed{
+border-top: 6px solid transparent;
+border-bottom: 6px solid transparent;
+border-left: 5px solid #030344;
+}
+
+.expanded{
+margin-top: 7px !important;
+margin-left: -25px !important;
+border-left: 6px solid transparent;
+border-right: 6px solid transparent;
+border-top: 5px solid #030344;
+}
+</style>
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.9.0/themes/base/jquery-ui.css">
+</head>
+{% load i18n %} 
+
+
+
+
+<div id="tabs" class="ui-tabs ui-widget ui-widget-content ui-corner-all">
+	<ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all" role="tablist">
+		<li class="ui-state-default ui-corner-top ui-tabs-active ui-state-active" role="tab" tabindex="0" aria-controls="tabs-1" aria-labelledby="ui-id-1" aria-selected="true"><a href="#tabs-1" class="ui-tabs-anchor" role="presentation" tabindex="-1" id="ui-id-1">Module Summary</a></li>
+		<li class="ui-state-default ui-corner-top" role="tab" tabindex="-1" aria-controls="tabs-2" aria-labelledby="ui-id-2" aria-selected="false"><a href="#tabs-2" class="ui-tabs-anchor" role="presentation" tabindex="-1" id="ui-id-2">Proficient Exercises</a></li>
+		<li class="ui-state-default ui-corner-top" role="tab" tabindex="-1" aria-controls="tabs-3" aria-labelledby="ui-id-3" aria-selected="false"><a href="#tabs-3" class="ui-tabs-anchor" role="presentation" tabindex="-1" id="ui-id-3">Exercises to be taken</a></li>
+	</ul>
+	<div id="tabs-1" aria-labelledby="ui-id-1" class="ui-tabs-panel ui-widget-content ui-corner-bottom" role="tabpanel" style="" aria-expanded="true" aria-hidden="false">
+		<h2>Module Summary</h2>
+	<table>		 
+<tr>
+<td>Total</td>
+<td><span style="padding-left:100px;">{{total}}</span></td>
+</table>
+	<ul class="checktree">
+	{% for module in modules%}
+		<li> 
+		{% if module.countExec > 0 %}
+			<div class="arrow collapsed"></div>
+		{% endif%}
+		{% if module.prof == 0 %}
+			<label class="modulehdr" style="color:grey;"><div>{{ module.name }}</div></label>
+		{% endif %}
+		{% if module.prof == -1 %}
+			<label class="modulehdr" style="color:red;"><div>{{ module.name }}</div></label>
+		{% endif %}
+		{% if module.prof == 1 %}
+			<label class="modulehdr" style="color:green;"><div>{{ module.name }}</div></label>
+		{% endif %}
+	
+		<ul class="Exercls">
+		{% if module.countExec > 0 %}
+			{% for exercise in module.userExecs %}
+			<li> 
+			<div class="arrow collapsed"></div>
+			{% if exercise.prof == 0 %}
+				<label class="titleExhdr" style="color:grey;"><div>{{ exercise.exercise.name }}</div></label>
+				<div style="padding-left: 50px;background-color:lightgoldenrodyellow" class="descEx">
+					<div>Covers : {{ exercise.exercise.covers }}</div>
+					<div>Author : {{ exercise.exercise.author }}</div>
+					<div>Description : {{ exercise.exercise.description }}</div>
+					<div>Streak : {{ exercise.exercise.streak }}</div>
+				</div>
+			{% endif %}
+			{% if exercise.prof == -1 %}
+				<label class="titleExhdr" style="color:red;"><div>{{ exercise.userexercise.exercise.name }}</div></label>
+			{% endif %}
+			{% if exercise.prof == 1 %}
+				<label class="titleExhdr" style="color:green;">
+				<div style="width:400px">{{ exercise.userexercise.exercise.name}}
+					<span style="color:black;float:right">{{exercise.points}}
+					</span>
+				</div>
+				</label>
+			{% endif %}
+			{% if exercise.prof != 0  %}
+		
+				<div style="padding-left: 50px;background-color:lightgoldenrodyellow" class="descEx">
+					<h4>Exercise Details</h4>
+					<div>Covers : {{ exercise.userexercise.exercise.covers }}</div>
+					<div>Author : {{ exercise.userexercise.exercise.author }}</div>
+					<div>Description : {{ exercise.userexercise.exercise.description }}</div>
+					{%if exercise.userexercise.exercise.ex_type == 'pe' %}
+						<div>Proficiency Percentage  :
+					{% else %}
+						<div>Score Required  :
+					{% endif%}
+
+					{{ exercise.userexercise.exercise.streak }}</div>
+					<div>Exercise Type : {{ exercise.userexercise.exercise.ex_type }}</div>
+					<h4>User Performance</h4>
+					<div>User Score : {{ exercise.userexercise.longest_streak }}</div>
+					<div>Total Correct : {{ exercise.userexercise.total_correct }}</div>
+					<div>Total Done : {{ exercise.userexercise.total_done  }}</div>
+
+				</div>
+
+			{% endif %}
+		</li>
+	{% endfor %}
+
+	{% endif %}
+	</ul>
+	</li>	
+	{% endfor %}
+	</ul> 
+</div>
+	<div id="tabs-2" aria-labelledby="ui-id-2" class="ui-tabs-panel ui-widget-content ui-corner-bottom" role="tabpanel" style="display: none; " aria-expanded="false" aria-hidden="true">
+	<table>		 
+		<tr>
+		<td>Total</td>
+		<td><span style="padding-left:100px;">{{total}}</span></td>
+		<ul class="ProfExercls">
+		{% for profexercise in profExecs %}
+		<tr>			
+		<td><li> 
+		<label class="titleExhdr" style="color:green;"><span>{{ profexercise.userexercise.exercise.name }}</span>
+		</label>
+		<div style="padding-left: 50px;background-color:lightgoldenrodyellow;color:black" class="descEx">
+			<h4>Exercise Details</h4>
+			<div>Covers : {{ profexercise.userexercise.exercise.covers }}</div>
+			<div>Author : {{ profexercise.userexercise.exercise.author }}</div>
+			<div>Description : {{ profexercise.userexercise.exercise.description }}</div>
+			{%if profexercise.userexercise.exercise.ex_type == 'pe' %}
+			<div>Proficiency Percentage  :
+			{% else %}
+			<div>Score Required  :
+			{% endif%}
+
+			{{ profexercise.userexercise.exercise.streak }}</div>
+			<div>Exercise Type : {{ profexercise.userexercise.exercise.ex_type }}</div>
+			<h4>User Performance</h4>
+			<div>User Score : {{ profexercise.userexercise.longest_streak }}</div>
+			<div>Total Correct : {{ profexercise.userexercise.total_correct }}</div>
+			<div>Total Done : {{ profexercise.userexercise.total_done  }}</div>
+		</div>
+		</li>
+	</td>
+	<td><span style="padding-left:100px;">{{profexercise.points}}</span></td>
+	</tr>
+
+	{% endfor %}
+	</ul>
+	</table>
+</div>
+<div id="tabs-3" aria-labelledby="ui-id-3" class="ui-tabs-panel ui-widget-content ui-corner-bottom" role="tabpanel" style="display: none; " aria-expanded="false" aria-hidden="true">
+        <ul class="nonProfExercls">
+		{% for nonProfExercise in nonProfExecs %}
+			<li> 	
+		<div class="arrow collapsed"></div>
+		<label class="titleExhdr" style="color:red;"><div>{{ nonProfExercise.exercise.exercise.name }}</div>
+	
+		<div style="padding-left: 50px;background-color:lightgoldenrodyellow;color:black" class="descEx">
+		<h4>Exercise Details</h4>
+		<div>Covers : {{ nonProfExercise.exercise.exercise.covers }}</div>
+		<div>Author : {{ nonProfExercise.exercise.exercise.author }}</div>
+		<div>Description : {{ nonProfExercise.exercise.exercise.description }}</div>
+		{%if nonProfExercise.exercise.ex_type == 'pe' %}
+		<div>Proficiency Percentage  :
+		{% else %}
+		<div>Score Required  :
+		{% endif%}
+
+		{{ nonProfExercise.exercise.streak }}</div>
+		<h4>User Performance</h4>
+		<div>User Score : {{ nonProfExercise.exercise.longest_streak }}</div>
+		<div>Total Correct : {{ nonProfExercise.exercise.total_correct }}</div>
+		<div>Total Done : {{ nonProfExercise.exercise.total_done  }}</div>
+	</div>
+	</li>
+	{% endfor %}
+	</ul>
+	<ul class="nonTakenExercls">
+	{% for nontakenExercise in nontakenExercs %}
+	<li> 	
+	<label class="titleExhdr" style="color:grey;"><div>{{ nontakenExercise.name }}</div>
+	<div style="padding-left: 50px;background-color:lightgoldenrodyellow;color:black" class="descEx">
+	<h4>Exercise Details</h4>
+	<div>Covers : {{ nontakenExercise.covers }}</div>
+	<div>Author : {{ nontakenExercise.author }}</div>
+	<div>Description : {{ nontakenExercise.description }}</div>
+	{%if nontakenExercise.ex_type == 'pe' %}
+		<div>Proficiency Percentage  :
+		{% else %}
+		<div>Score Required  :
+		{% endif%}
+
+		{{ nontakenExercise.streak }}</div>
+	</div>
+		</li>
+	{% endfor %}
+	</ul>
+	</div>
+</div>
+
+
+
+
+
+
+ 
+
+
