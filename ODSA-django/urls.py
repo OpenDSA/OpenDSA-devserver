@@ -3,7 +3,7 @@ from views import login,  verify_credentials #home
 from oauth_provider.views import protected_resource_example
 
 from opendsa.views import exercise_summary, class_summary, daily_summary, all_statistics, widget_data, home, add_or_edit_assignment, class_students, student_management, rebuild_book_assignments, merged_book, delete_assignment, mobile_devices, prof_statistics, student_work, students_data_home, create_accounts, upload_accounts, glossary_module_data, glossary_module_data_home, get_class_activity, get_all_activity, interactions_data_home, interactions_data, interactionsts_data, interactionsts_data_home
-from opendsa.developerview import exercises_stat, exercises_bargraph, exercises_time, student_list, student_exercise, exercise_list, exercise_detail, non_required_exercise_use, total_module_time, slideshow_cheating, work_order, skipping_text, slideshow_stats, time_required, cheating_exercises, work_distribution, student_list_home  
+from opendsa.developerview import exercises_stat, exercises_bargraph, exercises_time, student_list, student_exercise, exercise_list, exercise_detail, non_required_exercise_use, total_module_time, slideshow_cheating, work_order, skipping_text, slideshow_stats, time_required, cheating_exercises, work_distribution, student_list_home, timeline_sum, timeline_detail  
 # Django
 from django.conf.urls.defaults import *
 from django.contrib import admin
@@ -75,8 +75,8 @@ urlpatterns = patterns('',
     #Haystack
     #(r'^search/', include('haystack.urls')),
 
-    #url(r'^developer_view/timeline_sum/(?P<student>[\w]+)/$', timeline_sum),
-    #url(r'^developer_view/timeline_detail/(?P<student>[\w]+)/(?P<module>[\w]+)/(?P<year>[\w]+)/(?P<month>[\w]+)/(?P<day>[\w]+)/$', timeline_detail),
+    url(r'^developer_view/timeline_sum/(?P<student>[\w]+)/$', timeline_sum),
+    url(r'^developer_view/timeline_detail/(?P<student>[\w]+)/(?P<module>[\w]+)/(?P<year>[\w]+)/(?P<month>[\w]+)/(?P<day>[\w]+)/$', timeline_detail),
 
     # A+
     (r'^$', home),

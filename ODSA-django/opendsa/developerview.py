@@ -73,7 +73,8 @@ def median(mylist):
     return (sorts[length / 2] + sorts[length / 2 - 1]) / 2.0
   return sorts[length / 2]
 
-@staff_member_required
+#@staff_member_required
+@login_required
 def work_distribution(request, book, bin_size):
   # Select all users of a given book, except staff accounts, the phantom (guest) account and abandoned accounts
   users = UserBook.objects.filter(book=book, user__is_staff=0).exclude(user__username='phantom').exclude(user__in=accounts_to_ignore[int(book)]).order_by('id').values_list('user_id', flat=True)
@@ -123,7 +124,8 @@ def work_distribution(request, book, bin_size):
   return render_to_response("developer_view/default_csv_view.html")
 
 # TODO: This is SLOOOOWWWWW!!
-@staff_member_required
+#@staff_member_required
+@login_required
 def time_required(request, book):
   # Compute average for each exercise across all students who complete it
   # Compute average for each student across all exercises they computer
@@ -358,7 +360,8 @@ def skipping_text(request, book):
 
   return render_to_response("developer_view/default_csv_view.html")
 
-@staff_member_required
+#@staff_member_required
+@login_required
 def slideshow_stats(request, book):
   # Needs to count the total number of slideshows a student attempts, the number they complete, the number they cheat on and the average time
 
@@ -573,7 +576,8 @@ def slideshow_stats(request, book):
 
   return render_to_response("developer_view/default_csv_view.html")
 
-@staff_member_required
+#@staff_member_required
+@login_required
 def cheating_exercises(request, book):
   # Calculate total number of times each proficiency exercise is completed (with respect to the current book)
   # Calculate total number of times students used an AV for assistance on each proficiency exercise
@@ -735,7 +739,8 @@ def cheating_exercises(request, book):
 
 
 
-@staff_member_required
+#@staff_member_required
+@login_required
 def work_order(request, book):
   # Select all users of a given book, except staff accounts, the phantom (guest) account and abandoned accounts
   users = UserBook.objects.filter(book=book, user__is_staff=0).exclude(user__username='phantom').exclude(user__in=accounts_to_ignore[int(book)]).order_by('id').values_list('user_id', flat=True)
@@ -839,7 +844,8 @@ def work_order(request, book):
   return render_to_response("developer_view/default_csv_view.html")
 
 
-@staff_member_required
+#@staff_member_required
+@login_required
 def non_required_exercise_use(request):
   book = 5
 
@@ -941,7 +947,8 @@ def get_unique(list):
   list = [ x for x in list if x not in seen and not seen_add(x)]
   return list
 
-@staff_member_required
+#@staff_member_required
+@login_required
 def exercise_list(request, student):
   interesting_events = ['jsav-end', 'jsav-forward', 'jsav-array-click', 'odsa-award-credit']
   
@@ -969,7 +976,8 @@ def exercise_list(request, student):
 
   return render_to_response("developer_view/exercise_list.html", {'exercises': exercises, 'student': student})
 
-@staff_member_required
+#@staff_member_required
+@login_required
 def slideshow_cheating(request, student):
   # Maps an exercise name to a dictionary which which stores the number of times a student completed the slideshow (key: 'completed' and the number of times they cheated on the slideshow ('cheated')
   exer_data = OrderedDict()
@@ -1025,7 +1033,8 @@ def slideshow_cheating(request, student):
   
   return render_to_response("developer_view/slideshow_cheating.html", {'exer_data': exer_data, 'cheated_for_prof': cheated_for_prof_names})
 
-@staff_member_required
+#@staff_member_required
+@login_required
 def total_module_time(request):
   events = ['document-ready', 'window-unload', 'window-blur', 'window-focus']
   
@@ -1101,7 +1110,8 @@ class exeStat:
 
 #function to display the statistics of exercises
 #return the percentage of people that have achieved proficiency for each exercise
-@staff_member_required
+#@staff_member_required
+@login_required
 def exercises_stat(request):
     userExercise = UserExercise.objects.order_by('exercise').all();
         
@@ -1123,7 +1133,8 @@ def exercises_stat(request):
 
 #function to display a graph for the statistics of exercises
 #return the total number of proficiency achieved for each exercise
-@staff_member_required
+#@staff_member_required
+@login_required
 def exercises_bargraph(request):
     
     userExercise = UserExercise.objects.order_by('exercise').all();
@@ -1147,7 +1158,8 @@ def exercises_bargraph(request):
 #function to display a time distribution graph for the statistics of exercises
 #return the average time taken for an exercise
 #TODO: debug
-@staff_member_required
+#@staff_member_required
+@login_required
 def exercises_time(request):
     
     userExerciseLog = UserExerciseLog.objects.order_by('exercise').all();
@@ -1170,7 +1182,8 @@ def exercises_time(request):
                 
     return render_to_response("developer_view/exercises_time.html", {'exercises': exercises })
 
-@staff_member_required
+#@staff_member_required
+@login_required
 def student_list_home(request, course_instance = None):
 
 
@@ -1192,7 +1205,8 @@ def student_list_home(request, course_instance = None):
 
 #This function responds student list (not staff or super user)
 #The student information includes id(in the database), user name, and email, etc
-@staff_member_required
+#@staff_member_required
+@login_required
 def student_list(request):
 
     courses_intances = CourseInstance.objects.all()
@@ -1242,7 +1256,8 @@ class proficient_exercises:
     def get_number_print(self):
         return self.number*20
 
-@staff_member_required
+#@staff_member_required
+@login_required
 def student_exercise(request, course, student):
     userButtons = UserButton.objects.filter(user=student, name='document-ready')
 
@@ -1313,7 +1328,8 @@ class exercise_step:
         return float(self.click_num)/float(self.max_click)*500.0
 
 
-@staff_member_required    
+#@staff_member_required    
+@login_required
 def exercise_detail(request, student, exercise):
     #The activities of a user and an exercise
     userButtons = UserButton.objects.filter(user=student).filter(exercise=exercise).order_by('action_time')
@@ -1471,7 +1487,8 @@ class docready_event():
         return 0;
 
 #The first time line model
-@staff_member_required
+#@staff_member_required
+@login_required
 def timeline_sum(request, student):
     #This query fetches the document ready activities of a user
     userButtons = UserButton.objects.filter(user=student).filter(name='document-ready')
@@ -1508,7 +1525,8 @@ class general_event():
         
 
 #time line detail model
-@staff_member_required
+#@staff_member_required
+@login_required
 def timeline_detail(request, student, module, year, month, day):
     
     #This query fetches the activities of a user, a model, an action date except the document ready actions
