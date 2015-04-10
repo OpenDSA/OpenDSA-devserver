@@ -1,0 +1,4 @@
+studentlisttest.java:14: error while writing AList: AList.class (Permission denied)
+class AList implements List {
+^
+1 error

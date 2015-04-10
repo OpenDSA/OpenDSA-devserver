@@ -1,0 +1,16 @@
+studentrecwbca2PROG.java:82: error: cannot find symbol
+   str first = list(0);
+   ^
+  symbol:   class str
+  location: class studentrecwbca2PROG
+studentrecwbca2PROG.java:82: error: cannot find symbol
+   str first = list(0);
+               ^
+  symbol:   method list(int)
+  location: class studentrecwbca2PROG
+studentrecwbca2PROG.java:83: error: cannot find symbol
+   list.remove(0);
+       ^
+  symbol:   method remove(int)
+  location: variable list of type String[]
+3 errors

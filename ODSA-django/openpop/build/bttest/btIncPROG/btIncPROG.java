@@ -83,24 +83,28 @@ public class studentbtIncPROG
     }
  }
 
- public static boolean checkEqualTrees(BinNode rt , BinNode rt2) {
-    if (rt != null && rt2 != null)
-    {
-     if (((Integer)rt.element()).compareTo((Integer)rt2.element())==0){
-      modelbtInc(rt.left());
-      modelbtInc(rt.right());
-      return true;
-     }
-    else
-    {
-     return false;  
+ 
+public static boolean checkEqualTrees(BSTNode a, BSTNode b) {
+    // check for reference equality and nulls
+    if (a==b) return true; // note this picks up case of two nulls
+    if (a==null) return false;
+    if (b==null) return false;
+
+    // check for data inequality
+    if ((Integer)a.element().compareTo((Integer)b.element()) !=0) {
+        if (((Integer)a.element()==null)||((Integer)b.element()==null)) return false;
+        if ((((Integer)a.element()).compareTo((Integer)b.element())) !=0) return false;
     }
-   }
-   return true;
- }
 
+    // recursively check branches
+    if (!checkEqualTrees(a.left(),b.left())) return false;
+    if (!checkEqualTrees(a.right(),b.right())) return false;
 
- public static void writeResult(BinNode rt, BinNode rt2, boolean SUCCESS){
+    // we've eliminated all possibilities for non-equality, so trees must be equal
+    return true;
+}
+
+ public static void writeResult(BSTNode rt, BSTNode rt2, boolean SUCCESS){
  try{
 
      PrintWriter output = new PrintWriter("output");
@@ -124,7 +128,7 @@ public class studentbtIncPROG
 
  }
  
- public static boolean runTestCase(BinNode rt, BinNode rt2)
+ public static boolean runTestCase(BSTNode rt, BSTNode rt2)
  { 
    boolean SUCCESS = false;  
    btInc(rt);

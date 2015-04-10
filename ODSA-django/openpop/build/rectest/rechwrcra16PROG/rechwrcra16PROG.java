@@ -13,7 +13,7 @@ public class studentrechwrcra16PROG
    if ( num < 2)
      return Integer.toString(num);
    else
-      return modeldecibinary(num/2) + "  "+ Integer.toString(num%2);
+      return modeldecibinary(num/2) + Integer.toString(num%2);
   }
 	
      
@@ -22,9 +22,12 @@ public class studentrechwrcra16PROG
     boolean SUCCESS = false;
    
     Random randNumGenerator = new Random();
+    
     int number=  randNumGenerator.nextInt(32);
+    
+	int number2=  randNumGenerator.nextInt(32);
 	
-    if (decibinary(number).equals(modeldecibinary(number))) SUCCESS = true;
+    if (decibinary(number).equals(modeldecibinary(number)) && decibinary(number2).equals(modeldecibinary(number2)) ) SUCCESS = true;
 
     try{
 

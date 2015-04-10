@@ -1,6 +1,5 @@
 /** Test program for recursion programming exercise.
 Author: Sally Hamouda */
-//Exercise 19:  given stack without using any other data structures(or without extra memory). You cannot use any memory at all. All what you have to do is use recursion only to attain this. You don’t need to implement a function to push, pop or check if the stack is empty or not.
 
 import java.io.*;
 import java.util.Random;
@@ -31,32 +30,31 @@ public class studentrecw19PROG
    {
    if(s.size() == 0)  
     return; 
-   int n = getLast(s);
+   int n = popBottom(s);
    modelstackReversal(s);   
    s.push(n);
   }
 
+ 
 	  
  public static void main(String [ ] args) {
   
    boolean SUCCESS = false;
 
-    Stack lifo = new Stack();
-        
-    for (int i = 1; i <= 10; i++)
-    {
-      lifo.push ( new Integer(i) );
-    }
+    Stack <Integer> lifo = new Stack <Integer> ();
+    lifo.push(1);
+    lifo.push(2);
+    lifo.push(3);
+    lifo.push(4);
     
     modelstackReversal(lifo);
     
-    Stack lifo2 = new Stack(); 
-    
-    for (int i = 1; i <= 10; i++)
-    {
-     lifo2.push ( new Integer(i) );
-    }
-
+    Stack <Integer> lifo2 = new Stack <Integer> ();
+    lifo2.push(1);
+    lifo2.push(2);
+    lifo2.push(3);
+    lifo2.push(4);
+   
     stackReversal(lifo2);    
     
     if (compareStacks(lifo , lifo2)) SUCCESS = true;

@@ -1,0 +1,11 @@
+studentrecwrc13PROG.java:56: error: cannot find symbol
+  return sumOfDigits(n/10) + (n%10);
+                     ^
+  symbol:   variable n
+  location: class studentrecwrc13PROG
+studentrecwrc13PROG.java:56: error: cannot find symbol
+  return sumOfDigits(n/10) + (n%10);
+                              ^
+  symbol:   variable n
+  location: class studentrecwrc13PROG
+2 errors

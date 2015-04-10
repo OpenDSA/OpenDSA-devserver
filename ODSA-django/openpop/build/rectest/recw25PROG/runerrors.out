@@ -1,0 +1,3 @@
+Exception in thread "main" java.lang.ArrayIndexOutOfBoundsException: 10
+	at studentrecw25PROG.isSubsetSum(studentrecw25PROG.java:72)
+	at studentrecw25PROG.main(studentrecw25PROG.java:41)
