@@ -86,7 +86,7 @@ public class studentbtgetDiffPROG
 
 
 
- public static void writeResult(BSTNode rt,boolean SUCCESS){
+public static void writeResult(BinNode rt,boolean SUCCESS, String treeAsString , int modelAnswer, int studentAnswer ){
  try{
 
      PrintWriter output = new PrintWriter("output");
@@ -98,8 +98,7 @@ public class studentbtgetDiffPROG
      }
     else 
     {
-     //output.println("Try Again!  Expected Answer is "+ Integer.toString(count(rt)) +" Your Answer is: " + Integer.toString(exercise2(rt)));
-     output.println("Try Again! Your answer is not correct for all test cases."); // Later we should display the binary tree where the test case failed
+	 output.println("Try Again! Your answer is not correct for all test cases. For example if the given tree is:\n " + treeAsString + ", your code returns:  " + studentAnswer+ " while the expected answer is: " + modelAnswer+"."); 
      output.close();
     }
   
@@ -110,10 +109,14 @@ public class studentbtgetDiffPROG
 
  }
  
- public static boolean runTestCase(BSTNode rt)
+ 
+ public static boolean runTestCase(BSTNode rt , String treeAsString)
  { 
-   boolean SUCCESS = false;  
-   if (btgetDifference(rt)  == modelbtgetDifference(rt)) 
+   boolean SUCCESS = false; 
+   int modelAnswer  = modelbtgetDifference(rt);
+   int studentAnswer= btgetDifference(rt);
+   
+   if (modelAnswer  ==  studentAnswer) 
    { 
      SUCCESS = true;   
    }
@@ -121,23 +124,23 @@ public class studentbtgetDiffPROG
    else  // This test case fail then will write the result and abort the function
    {
     SUCCESS = false;
-    writeResult(rt , SUCCESS);
+    writeResult(rt , SUCCESS ,  treeAsString , modelAnswer, studentAnswer);
     
    }
   return SUCCESS;
  }
- 
 
+ 
 
   public static void main(String [ ] args) {
  
-  // We will more than one test case
+  // We will  have more than one test case
    
   //First test case ..empty tree
    BSTNode root = null;
-   
+   String   treeAsString = "empty";
   
-   if (runTestCase(root) == false) return;
+   if (runTestCase(root , treeAsString ) == false) return;
    ////// End of the first test case
 
    // Second test case
@@ -147,42 +150,45 @@ public class studentbtgetDiffPROG
 
    root.setLeft(leftChild); 
    root.setRight(rightChild);
-   if (runTestCase(root)== false) return;
+   
+   treeAsString = "  10\n"
+                 +" / \\ \n"
+                 +"15 20 \n ";
+ 
+   if (runTestCase(root ,treeAsString)== false) return;
    ////// End of the second test case
 
 
   //Third test case
   root= null;
-  root = new BSTNode(10);
-  BSTNode currentNode= root;
-  ArrayList <BSTNode> leftChildren = new ArrayList<BSTNode>() ; 
-  ArrayList <BSTNode> rightChildren = new ArrayList<BSTNode>() ;
+  root = new BSTNode(20);
+  leftChild = new BSTNode(5);
+  rightChild = new BSTNode(10);
+  BSTNode leftChild2 = new BSTNode(30);
+  BSTNode rightChild2 = new BSTNode(70);
+  BSTNode leftChild3 = new BSTNode(50);
+  BSTNode rightChild3 = new BSTNode(10);
 
-  for (int i=0 ; i<10; i++)
-  {   
-   leftChildren.add( new BSTNode(15));
-   rightChildren.add( new BSTNode(15));
+  root.setLeft(leftChild); 
+  root.setRight(rightChild);
   
-  }
-
-   for (int i=0 ; i<10; i++)
-  {      
-   currentNode.setLeft(leftChildren.get( i));
-   currentNode = leftChildren.get( i);
-  }
-  currentNode= root;
-
-   for (int i=0 ; i<10; i++)
-  {   
-   currentNode.setRight(rightChildren.get( i));
-   currentNode = rightChildren.get(i);
-  }
- currentNode=root;
+  leftChild.setLeft(leftChild2); 
+  leftChild.setRight(rightChild2);
+  
+  rightChild.setLeft(leftChild3); 
+  rightChild.setRight(rightChild3);
+  
+  treeAsString = "  20\n"
+                +" / \\ \n"
+                +"5   10 \n "
+                +" / \\ / \\\n"
+                +"30 70 50 10\n ";
  
-  if (runTestCase(root ) == false) return;
+  
+  if (runTestCase(root,treeAsString ) == false) return;
  ///End of the third test case
 
   // If none the test cases failed then all of them are ok then sucess=true
-  writeResult(root , true);
+   writeResult(root , true , treeAsString , 0 , 0);
 
   } 

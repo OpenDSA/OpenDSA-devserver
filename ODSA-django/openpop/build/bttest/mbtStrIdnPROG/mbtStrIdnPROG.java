@@ -71,40 +71,32 @@ class BSTNode implements BinNode {
 
 
 
-public class studentbtIncPROG
+public class studentmbtStrIdnPROG
 {
 
- public static void modelbtInc(BinNode rt) {
-    if (rt != null)
-    {
-     rt.setElement(((Integer)rt.element()) +1);
-     modelbtInc(rt.left());
-     modelbtInc(rt.right());
-    }
- }
-
  
-public static boolean checkEqualTrees(BSTNode a, BSTNode b) {
-    // check for reference equality and nulls
-    if (a==b) return true; // note this picks up case of two nulls
-    if (a==null) return false;
-    if (b==null) return false;
+ public static boolean modelmbtStrIdn(BSTNode a, BSTNode b) {
 
-    // check for data inequality
-    if ((Integer)a.element().compareTo((Integer)b.element()) !=0) {
-        if (((Integer)a.element()==null)||((Integer)b.element()==null)) return false;
-        if ((((Integer)a.element()).compareTo((Integer)b.element())) !=0) return false;
+ if (a==null && b== null)
+        return true;
+ 
+    /* 2. both non-empty -> compare them */
+    if (a!=null && b!= null)
+    {
+        return
+        (
+            
+            modelmbtStrIdn(a.left(), b.left()) &&
+            modelmbtStrIdn(a.right(), b.right())
+        );
     }
+     
+    /* 3. one empty, one not -> false */
+    return false;
 
-    // recursively check branches
-    if (!checkEqualTrees(a.left(),b.left())) return false;
-    if (!checkEqualTrees(a.right(),b.right())) return false;
-
-    // we've eliminated all possibilities for non-equality, so trees must be equal
-    return true;
 }
 
- public static void writeResult(BSTNode rt,boolean SUCCESS, String treeAsString , String modelAnswer, String studentAnswer ){
+ public static void writeResult(BSTNode rt, BSTNode rt2 , boolean SUCCESS, String tree1AsString , String tree2AsString, boolean modelAnswer, boolean studentAnswer ){
  try{
 
      PrintWriter output = new PrintWriter("output");
@@ -116,9 +108,8 @@ public static boolean checkEqualTrees(BSTNode a, BSTNode b) {
      }
     else 
     {
-   
-     output.println("Try Again! Your answer is not correct for all test cases. For example if the given tree is:\n " + treeAsString + ", your code returns:\n  " + studentAnswer+ " \n while the expected answer is:\n " + modelAnswer); 
-     output.close();
+    output.println("Try Again! Your answer is not correct for all test cases. For example if the first tree is:\n " + tree1AsString + "\n and the second tree is:\n "+ tree2AsString + " \n, your code returns:  " + studentAnswer+ " while the expected answer is: " + modelAnswer+".");  
+    output.close();
     }
   
     }
@@ -128,12 +119,13 @@ public static boolean checkEqualTrees(BSTNode a, BSTNode b) {
 
  }
  
- public static boolean runTestCase(BSTNode rt, BSTNode rt2 , String treeAsString , String modelAnswer)
+ public static boolean runTestCase(BSTNode rt, BSTNode rt2, String tree1AsString , String tree2AsString)
  { 
-   boolean SUCCESS = false;  
-   btInc(rt);
-   modelbtInc(rt2);
-   if (checkEqualTrees(rt , rt2) == true) 
+   boolean SUCCESS = false;
+   boolean modelAnswer  = modelmbtStrIdn(rt, rt2);
+   boolean studentAnswer= mbtStrIdn(rt , rt2); 
+   
+   if (modelAnswer  ==  studentAnswer)  
    { 
      SUCCESS = true;   
    }
@@ -141,90 +133,111 @@ public static boolean checkEqualTrees(BSTNode a, BSTNode b) {
    else  // This test case fail then will write the result and abort the function
    {
     SUCCESS = false;
-    String studentAnswer ="";
-    if (rt!= null)
-     studentAnswer = getTreeAsaString(rt);
-    writeResult(rt , SUCCESS , treeAsString , modelAnswer , studentAnswer);
+    writeResult(rt , rt2, SUCCESS ,  tree1AsString ,  tree2AsString, modelAnswer, studentAnswer);
     
    }
   return SUCCESS;
  }
  
- public static String getTreeAsaString(BinNode rt)
- {
 
-   String tree = " "+ (Integer)rt.element()+"\n";
-   tree = tree +" / \\ \n";
-   tree= tree + " "+ (Integer)rt.left().element()+ " "+ (Integer)rt.right().element() + "\n";
-   
-   return tree;
- }
 
   public static void main(String [ ] args) {
  
   // We will have more than one test case
-    String treeAsString = " empty ";
+   
   //First test case ..empty tree
    BSTNode root = null;
    BSTNode root2 = null;
-  
-   if (runTestCase(root, root2, treeAsString , "") == false) return;
+   
+   String tree1AsString = " empty ";
+   
+   String tree2AsString = " empty ";
+   
+  // if (runTestCase(root, root2 , tree1AsString , tree2AsString) == false) return;
    ////// End of the first test case
 
-   // Second test case
+   // Second test case -- the same tree
    root = new BSTNode(10);
-   root2 = new BSTNode(10);
+   root2 = new BSTNode(20);
 
    BSTNode leftChild = new BSTNode(15);
    BSTNode rightChild = new BSTNode(20);
 
-   BSTNode leftChild2 = new BSTNode(15);
-   BSTNode rightChild2 = new BSTNode(20);
+   BSTNode leftChild2 = new BSTNode(5);
+   BSTNode rightChild2 = new BSTNode(30);
+
+   
+   BSTNode leftChild2c = new BSTNode(35);
+   BSTNode rightChild2c = new BSTNode(45);
+
+   BSTNode leftChild3c = new BSTNode(15);
+   BSTNode rightChild3c = new BSTNode(10);
+
+   root.setLeft(leftChild); 
+   leftChild.setLeft(leftChild2c); 
+   
+   root.setRight(rightChild);
+   leftChild.setRight(rightChild2c);
+  
+  
+   root2.setLeft(leftChild2); 
+   leftChild2.setLeft(leftChild3c); 
+   
+   root2.setRight(rightChild2);
+   leftChild2.setRight(rightChild3c);
+   
+   tree1AsString = "  10\n"
+                  +" / \\ \n"
+                 +"15 20 \n "
+                  +"/ \\ \n"
+                  +"10 20 \n ";
+
+   tree2AsString = "  20\n"
+                  +" / \\ \n"
+                  +"5  30 \n "
+                  +"/ \\ \n"
+                  +"15 10 \n ";
+
+   if (runTestCase(root, root2 , tree1AsString , tree2AsString)== false) return;
+   ////// End of the second test case
+
+
+  //Third test case ---Different trees 
+   root = new BSTNode(30);
+   root2 = new BSTNode(10);
+
+   leftChild = new BSTNode(5);
+   rightChild = new BSTNode(40);
+   
+   BSTNode leftChild3 = new BSTNode(10);
+   BSTNode rightChild3 = new BSTNode(20);
+
+   
+   leftChild2 = new BSTNode(15);
+   rightChild2 = new BSTNode(20);
 
    root.setLeft(leftChild); 
    root.setRight(rightChild);
+   
+   leftChild.setLeft(leftChild3); 
+   leftChild.setRight(rightChild3);
   
    root2.setLeft(leftChild2); 
    root2.setRight(rightChild2);
    
-   treeAsString = "  10\n"
+   tree1AsString = "  30\n"
+                  +" / \\ \n"
+                  +"5 40 \n "
+                  +"/ \\ \n"
+                  +"10 20 \n ";
+
+   tree2AsString = "  10\n"
                   +" / \\ \n"
                   +"15 20 \n ";
 
-   String modelAnswer = "  11\n"
-                       +" / \\ \n"
-                       +"16 21 \n ";
+   if (runTestCase(root, root2 , tree1AsString , tree2AsString)== false) return;
 
-   if (runTestCase(root, root2 , treeAsString , modelAnswer )== false) return;
-   ////// End of the second test case
-
-   // Third test case
-   root = new BSTNode(20);
-   root2 = new BSTNode(20);
-   
-   leftChild = new BSTNode(5);
-   rightChild = new BSTNode(30);
-
-   leftChild2 = new BSTNode(5);
-   rightChild2 = new BSTNode(30);
-
-   root.setLeft(leftChild); 
-   root.setRight(rightChild);
-  
-   root2.setLeft(leftChild2); 
-   root2.setRight(rightChild2);
-   
-   treeAsString = "  20\n"
-                  +" / \\ \n"
-                  +" 5 30 \n ";
-
-   modelAnswer = "  21\n"
-                +" / \\ \n"
-                +" 6  31 \n ";
-
-  if (runTestCase(root, root2 , treeAsString , modelAnswer )== false) return;
-  
   // If none the test cases failed then all of them are ok then sucess=true
- writeResult(root , true , treeAsString , "" , "");
+ writeResult(root , root2, true , tree1AsString , tree2AsString , true , true);
 
   } 

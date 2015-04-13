@@ -74,7 +74,7 @@ class BSTNode implements BinNode {
 public class studentbtcheckSumPROG
 {
 
- public static boolean  modelbtcheckSum(BSTNode root) 
+ public static boolean  modelbtcheckSum(BinNode root) 
  {
 	 int leftValue,rightValue;
 	    leftValue=0;rightValue=0;
@@ -101,7 +101,7 @@ public class studentbtcheckSumPROG
 
 
 
- public static void writeResult(BSTNode rt,boolean SUCCESS){
+ public static void writeResult(BinNode rt,boolean SUCCESS , String treeAsString , boolean modelAnswer, boolean studentAnswer ){
  try{
 
      PrintWriter output = new PrintWriter("output");
@@ -113,9 +113,8 @@ public class studentbtcheckSumPROG
      }
     else 
     {
-     //output.println("Try Again!  Expected Answer is "+ Integer.toString(count(rt)) +" Your Answer is: " + Integer.toString(exercise2(rt)));
-     output.println("Try Again! Your answer is not correct for all test cases."); // Later we should display the binary tree where the test case failed
-     output.close();
+      output.println("Try Again! Your answer is not correct for all test cases. For example if the given tree is:\n " + treeAsString + ", your code returns:  \n" + studentAnswer+ " while the expected answer is: " + modelAnswer);     
+      output.close();
     }
   
     }
@@ -125,10 +124,12 @@ public class studentbtcheckSumPROG
 
  }
  
- public static boolean runTestCase(BSTNode rt)
+ public static boolean runTestCase(BSTNode rt , String treeAsString)
  { 
    boolean SUCCESS = false;  
-   if (btcheckSum(rt)  == modelbtcheckSum(rt)) 
+   boolean modelAnswer  = modelbtcheckSum(rt);
+   boolean studentAnswer= btcheckSum(rt);
+   if (modelAnswer  ==  studentAnswer) 
    { 
      SUCCESS = true;   
    }
@@ -136,7 +137,7 @@ public class studentbtcheckSumPROG
    else  // This test case fail then will write the result and abort the function
    {
     SUCCESS = false;
-    writeResult(rt , SUCCESS);
+    writeResult(rt , SUCCESS ,  treeAsString , modelAnswer, studentAnswer);
     
    }
   return SUCCESS;
@@ -151,8 +152,9 @@ public class studentbtcheckSumPROG
   //First test case ..empty tree
    BSTNode root = null;
    
+   String treeAsString = " empty ";
   
-   if (runTestCase(root) == false) return;
+   if (runTestCase(root , treeAsString) == false) return;
    ////// End of the first test case
 
    // Second test case
@@ -162,7 +164,12 @@ public class studentbtcheckSumPROG
 
    root.setLeft(leftChild); 
    root.setRight(rightChild);
-   if (runTestCase(root)== false) return;
+   
+   treeAsString = "  15\n"
+                  +" / \\ \n"
+                  +" 5 10 \n ";
+ 
+   if (runTestCase(root , treeAsString)== false) return;
    ////// End of the second test case
 
 
@@ -174,10 +181,14 @@ public class studentbtcheckSumPROG
   leftChild.setLeft(leftChild2); 
   leftChild.setRight(rightChild2);
   
-  if (runTestCase(root ) == false) return;
+  treeAsString = "  15\n"
+                  +" / \\ \n"
+                  +"15  5 \n ";
+ 
+  if (runTestCase(root , treeAsString) == false) return;
  ///End of the third test case
 
   // If none the test cases failed then all of them are ok then sucess=true
-  writeResult(root , true);
+   writeResult(root , true , treeAsString  , true , true);
 
   } 

@@ -15,7 +15,7 @@ import unicodedata
 import sys
 import string
 import time, sys
-
+from semanticCodeAnalysis import btcheckEfficientCode
 
 #from subprocess import call
 #import pdb; pdb.set_trace()
@@ -136,27 +136,27 @@ def attempt_problem_pop(user_data, user_exercise, attempt_number,
 def setparameters(exerciseName, data, generatedList, checkDefinedvar, listoftypes, progexType ):
     # Check from which programming exercise we got this request
     if exerciseName == "BinaryTreePROG" : #count number of nodes
-       feedback= assessprogkaex (data, "binarytreetest", "binarytreetest","",checkDefinedvar , listoftypes)
+       feedback= assessprogkaex (data, "binarytreetest", "binarytreetest","",checkDefinedvar , listoftypes , "")
 
     elif exerciseName == "BTLeafPROG" :  #count number of leaf nodes
-       feedback= assessprogkaex (data , "btleaftest", "btleaftest","", checkDefinedvar , listoftypes)      
+       feedback= assessprogkaex (data , "btleaftest", "btleaftest","", checkDefinedvar , listoftypes, "")      
 
     elif "list" in progexType:  #generate a list
-       feedback= assessprogkaex(data , "listadttest", "listadttest" ,generatedList, checkDefinedvar, listoftypes)
+       feedback= assessprogkaex(data , "listadttest", "listadttest" ,generatedList, checkDefinedvar, listoftypes, "")
 
     # Binary Trees programming exercises 
     elif "binarytree" in progexType:   
-       feedback= assessprogkaex(data,"bttest/"+exerciseName, exerciseName,"",checkDefinedvar , listoftypes)
+       feedback= assessprogkaex(data,"bttest/"+exerciseName, exerciseName,"",checkDefinedvar , listoftypes, progexType)
 
     # Recursion programming exercises have the same folder with different subfolders. Where the subfolder is the exercise name
     elif "recursion" in progexType:   
-       feedback= assessprogkaex(data,"rectest/"+exerciseName, exerciseName,"",checkDefinedvar , listoftypes)
+       feedback= assessprogkaex(data,"rectest/"+exerciseName, exerciseName,"",checkDefinedvar , listoftypes , progexType)
     return feedback   
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 #  All Programming exercises are compiled and run through the following function
-def assessprogkaex(data, testfoldername, testfilenamep, generatedList, checkDefinedvar, listoftypes ):
+def assessprogkaex(data, testfoldername, testfilenamep, generatedList, checkDefinedvar, listoftypes, progexType):
     print "=============="
     print settings 
     filesPath = settings.File_Path  + testfoldername+'/'
@@ -173,7 +173,7 @@ def assessprogkaex(data, testfoldername, testfilenamep, generatedList, checkDefi
             pass
     print i+1 
     
-    feedback=[False, 'null', i+1 , studentfilename , 'class '+ studentfilename]
+    feedback=[False, 'null', i+1 , studentfilename , 'class '+ studentfilename ]
     # Those are the datatypes that are not allowed to be defined in that exercise
     # The first one is already defined in the given code to the student 
     # so the student should not define more and the others should not be declared at all
@@ -203,40 +203,6 @@ def assessprogkaex(data, testfoldername, testfilenamep, generatedList, checkDefi
     if os.path.isfile(filesPath +'newpolicy.policy'):
        os.remove(filesPath + 'newpolicy.policy')
 
-    #if os.path.isfile(filesPath +'StaticCode.java'):
-    #   os.remove(filesPath + 'StaticCode.java')
-    
-    # Static code analysis
-    
-    #Enlcose the student code in a class
-    #staticCode = open(filesPath+"StaticCode.java", 'w')
-    #staticCode.write("class StaticCode { ")
-    #staticCode.write(data)
-    #staticCode.write("}")
-    #staticCode.close() 
-    #print filesPath +"StaticCode.java"
-    
-    #parser = plyj.Parser()
-    
-    #parsed = parser.parse_file(filesPath +"StaticCode.java")
-    #print parsed
-    #for a_class in parsed.type_declarations:
-    #    for declaration in a_class.body:
-    #        if isinstance(declaration, plyj.MethodDeclaration):
-    #            name = declaration.name
-    #            declaration.accept(RecursionChecker(name))
-
-    #rexfileread = open(filesPath +"rexfile" , 'r')
-    #line= rexfileread.read()
-    #rexfileread.close()
-
-    #if "True" in line:
-    #   print "True"
-    #else:
-    #   print "False"
-   
-    # End of Static code analysis
-
 
     # Saving the submitted/received code in the studentrectest.java file by copying the preorder + studentcode +}
     TestFile = open(filesPath+testfilename , 'r')
@@ -263,7 +229,7 @@ def assessprogkaex(data, testfoldername, testfilenamep, generatedList, checkDefi
     # Setting the DISPLAY then run the processing command to test the submitted code
     proc1 = subprocess.Popen(" cd "+ filesPath +"; javac "+studentfilename+" 2> "+filesPath + "compilationerrors.out ; java -Djava.security.manager -Djava.security.policy==newpolicy.policy student"+testfilenamep+" 2> " + filesPath +"runerrors.out", stdout=subprocess.PIPE, shell=True)
    
-    time.sleep(7)
+    time.sleep(3)
     os.system("kill -9 "+ str(proc1.pid) )
 
     print data
@@ -303,12 +269,13 @@ def assessprogkaex(data, testfoldername, testfilenamep, generatedList, checkDefi
               elif 'Exception in thread "main" java.lang.StackOverflowError' in line:
                  feedback[1]= ["Try Again! Your solution leads to infinite recursion!"]
                  return feedback
-              elif 'Exception in thread "main"' in line:
-				  feedback[1]= ["Try Again! Your solution leads to "+ line.replace("Exception in thread \"main\" java.lang.", "")]
-				  return feedback
-              #elif 'Exception in thread "main" java.lang.ArrayIndexOutOfBoundsException' in line:
-			#	  feedback[1]= ["Try Again! Your solution leads to an array index out of bounds exception!"]
-			#	  return feedback
+              elif 'NullPointerException' in line and progexType == "binarytree":
+		 feedback[1]= ["Try Again! You are trying to access a null node. You have forgotten to check if the node is null before accessing it. Have you checked if the root is null or not? if yes then ask your self the next question: are you trying to access the root's left or right children before the recursive call? You may need to revise your code and check if the solution really need to do that. If you have to get the value of one or both of the children before the recursive call then make sure to check if they are null or not."]
+		 #return feedback
+	      elif 'Exception in thread "main"' in line:
+		 feedback[1]= ["Try Again! Your solution leads to "+ line.replace("Exception in thread \"main\" java.lang.", "")]
+                 return feedback
+              
               #elif 'Exception in thread "main" java.lang.ArithmeticException: / by zero' in line:
 				#  feedback[1]= ["Try Again! Your solution leads to divide by zero exception!"]
 				#  return feedback
@@ -323,11 +290,23 @@ def assessprogkaex(data, testfoldername, testfilenamep, generatedList, checkDefi
        #Check what is returned from the test : what is inside the success file
        successFile = open(filesPath+'output' , 'r')
        feedback[1] = successFile.readlines()
-       print feedback[1]
+       print feedback[1] 
        for line in feedback[1]:
+		   # it is correct but..for recursion check they are doing it recursively
+		   # it is correct but..for binary trees check they are doing it in the effecient way
            if "Well Done" in line:
-              feedback[0] = True
-              return feedback
+			   if progexType == "binarytree":
+				   efficient,btineffFB = btcheckEfficientCode(data , testfilenamep)
+				   if efficient == True:
+					   feedback[0] = True
+					   return feedback
+				   else:
+					 feedback[0] = False
+					 feedback[1]= btineffFB
+					 return feedback
+					 
+			   feedback[0] = True
+			   return feedback
                
            else:
               feedback[0] = False
@@ -335,23 +314,5 @@ def assessprogkaex(data, testfoldername, testfilenamep, generatedList, checkDefi
 
     feedback[1]=['Try Again! Your code is taking too long to run! Revise your code!']
     return feedback
-
-# Static code analysis code
-
-#class RecursionChecker(model.Visitor):
-#    def __init__(self, needle):
-#        super(RecursionChecker, self).__init__()
-#        self.needle = needle
-#        self.rexfile = open("rexfile" , 'w')
-
-
-
-#    def visit_MethodInvocation(self, t):
-#       if t.name == self.needle:
-#           self.rexfile.write('True')
-#           self.rexfile.close()
-           
-
-
 
                 

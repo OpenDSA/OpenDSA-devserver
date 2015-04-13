@@ -90,21 +90,51 @@ public class studentbthasPathSumPROG
    BSTNode root = null;
      
    root = new BSTNode(10);
-   
    BSTNode leftChild = new BSTNode(15);
    BSTNode rightChild = new BSTNode(20);
 
    root.setLeft(leftChild); 
    root.setRight(rightChild);
   
+  
+   String   treeAsString = "  10\n"
+                          +" / \\ \n"
+                          +"15 20 \n ";
+ 
    boolean SUCCESS1 = false;
    boolean SUCCESS2 = false;
 
+
+    boolean modelAnswer = false;
+    boolean studentAnswer = true;
+    int sum =0;
+    
     int sum1= 25;
     int sum2= 5;
-
-    if (bthasPathSum(root, sum1)== modelbthasPathSum(root, sum1)) SUCCESS1 = true;
-    if (bthasPathSum(root, sum2)== modelbthasPathSum(root, sum2)) SUCCESS2 = true;
+    
+    
+    boolean studentAnswer1 = bthasPathSum(root, sum1);
+    boolean studentAnswer2 = bthasPathSum(root, sum2);
+    
+    boolean modelAnswer1 = modelbthasPathSum(root, sum1);
+    boolean modelAnswer2 = modelbthasPathSum(root, sum2);
+    
+    if (studentAnswer1== modelAnswer1) SUCCESS1 = true;
+    else 
+    {
+		modelAnswer= modelAnswer1;
+		studentAnswer= studentAnswer1;
+		sum = sum1;
+	}
+    if (studentAnswer2== modelAnswer2) SUCCESS2 = true;
+    else 
+    {
+		modelAnswer= modelAnswer2;
+		studentAnswer= studentAnswer2;
+		sum = sum2;
+	}
+	
+	
     try{
 
      PrintWriter output = new PrintWriter("output");
@@ -115,8 +145,8 @@ public class studentbthasPathSumPROG
       output.close();
      }
     else 
-    {
-     output.println("Try Again! Incorrect answer!");
+    { 
+     output.println("Try Again! Your answer is not correct for all test cases. For example if the given tree is:\n " + treeAsString + " and the sub-sum is " + sum + ", your code returns:  " + studentAnswer+ " while the expected answer is: " + modelAnswer+".");
      output.close();
     }
   

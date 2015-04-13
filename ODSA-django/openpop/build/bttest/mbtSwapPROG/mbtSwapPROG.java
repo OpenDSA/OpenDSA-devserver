@@ -107,7 +107,7 @@ public class studentmbtSwapPROG
     modelmbtSwap(a.right(), b.right());
 }
 
- public static void writeResult(BSTNode rt, BSTNode rt2, boolean SUCCESS){
+ public static void writeResult(BSTNode rt, BSTNode rt2, boolean SUCCESS , String tree1AsString  , String tree2AsString , String studentAnswerrt1 , String studentAnswerrt2 ){
  try{
 
      PrintWriter output = new PrintWriter("output");
@@ -119,8 +119,7 @@ public class studentmbtSwapPROG
      }
     else 
     {
-     //output.println("Try Again!  Expected Answer is "+ Integer.toString(count(rt)) +" Your Answer is: " + Integer.toString(exercise2(rt)));
-     output.println("Try Again! Your answer is not correct for all test cases."); // Later we should display the binary tree where the test case failed
+     output.println("Try Again! Your answer is not correct for all test cases. For example if the first tree is:\n " + tree1AsString + "\n and the second tree is:\n "+ tree2AsString + " \n, your code changes the first tree to:\n  " + studentAnswerrt1 +"and the second tree to:\n"+ studentAnswerrt2+ " while the expected answer is the trees swapped.");  
      output.close();
     }
   
@@ -131,7 +130,7 @@ public class studentmbtSwapPROG
 
  }
  
- public static boolean runTestCase(BSTNode rt, BSTNode rt2 , BSTNode rt3, BSTNode rt4)
+ public static boolean runTestCase(BSTNode rt, BSTNode rt2 , BSTNode rt3, BSTNode rt4 , String tree1AsString  , String tree2AsString )
  { 
    boolean SUCCESS = false; 
    // The model answer will swap the  trees
@@ -149,13 +148,27 @@ public class studentmbtSwapPROG
    else  // This test case fail then will write the result and abort the function
    {
     SUCCESS = false;
-    writeResult(rt , rt2, SUCCESS);
+    String studentAnswerrt1 ="";
+    String studentAnswerrt2 ="";
+    if (rt!= null && rt2!=null){
+     studentAnswerrt1 = getTreeAsaString(rt2);
+     studentAnswerrt2 = getTreeAsaString(rt);
+     }
+    writeResult(rt , rt2, SUCCESS , tree1AsString , tree2AsString , studentAnswerrt1 , studentAnswerrt2);
     
    }
   return SUCCESS;
  }
  
+public static String getTreeAsaString(BinNode rt)
+ {
 
+   String tree = " "+ (Integer)rt.element()+"\n";
+   tree = tree +" / \\ \n";
+   tree= tree + " "+ (Integer)rt.left().element()+ " "+ (Integer)rt.right().element() + "\n";
+   
+   return tree;
+ }
 
   public static void main(String [ ] args) {
  
@@ -168,13 +181,19 @@ public class studentmbtSwapPROG
    BSTNode root3 = null;
    BSTNode root4 = null;
    
-   if (runTestCase(root, root2 , root3, root4 ) == false) return;
+   String tree1AsString = " empty ";
+   
+   String tree2AsString = " empty ";
+   
+   if (runTestCase(root, root2 , root3, root4 ,  tree1AsString  ,  tree2AsString  ) == false) return;
    ////// End of the first test case
 
-   // Second test case -- the same tree
+   // Second test case 
    root = new BSTNode(10);
    root2 = new BSTNode(66);
+   
    root3 = new BSTNode(10);//Original First tree
+   
    root4 = new BSTNode(66); //Original Second tree
 
    BSTNode leftChild = new BSTNode(15);
@@ -200,11 +219,19 @@ public class studentmbtSwapPROG
   
    root4.setLeft(leftChild4); 
    root4.setRight(rightChild4);
+   
+   
+   tree1AsString = "  10\n"
+                  +" / \\ \n"
+                  +"15 20 \n ";
 
-   if (runTestCase(root, root2, root3, root4)== false) return;
+   tree2AsString = "  66\n"
+                  +" / \\ \n"
+                  +"77 80 \n ";
+
+   if (runTestCase(root, root2, root3, root4 , tree1AsString  , tree2AsString )== false) return;
    ////// End of the second test case
 
   // If none the test cases failed then all of them are ok then sucess=true
-  writeResult(root , root2 , true);
-
+  writeResult(root , root2 , true, ""  , "" , "" , "" );
   } 

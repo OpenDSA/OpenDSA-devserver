@@ -82,20 +82,19 @@ public class studentbtDepthPROG
 
 
 
- public static void writeResult(BinNode rt,boolean SUCCESS){
+ public static void writeResult(BinNode rt,boolean SUCCESS, String treeAsString , int modelAnswer, int studentAnswer ){
  try{
 
      PrintWriter output = new PrintWriter("output");
 
      if (SUCCESS) { 
-   
       output.println("Well Done!");
       output.close();
      }
     else 
     {
-     //output.println("Try Again!  Expected Answer is "+ Integer.toString(count(rt)) +" Your Answer is: " + Integer.toString(exercise2(rt)));
-     output.println("Try Again! Your answer is not correct for all test cases."); // Later we should display the binary tree where the test case failed
+     
+     output.println("Try Again! Your answer is not correct for all test cases. For example if the given tree is:\n " + treeAsString + ", your code returns:  " + studentAnswer+ " while the expected answer is: " + modelAnswer+"."); 
      output.close();
     }
   
@@ -106,10 +105,14 @@ public class studentbtDepthPROG
 
  }
  
- public static boolean runTestCase(BinNode rt)
+ public static boolean runTestCase(BinNode rt, String treeAsString)
  { 
-   boolean SUCCESS = false;  
-   if (btDepth(rt)  == modelbtDepth(rt)) 
+   boolean SUCCESS = false;
+   
+   int modelAnswer  = modelbtDepth(rt);
+   int studentAnswer= btDepth(rt);
+   
+   if (modelAnswer  ==  studentAnswer)
    { 
      SUCCESS = true;   
    }
@@ -117,7 +120,7 @@ public class studentbtDepthPROG
    else  // This test case fail then will write the result and abort the function
    {
     SUCCESS = false;
-    writeResult(rt , SUCCESS);
+    writeResult(rt , SUCCESS ,  treeAsString , modelAnswer, studentAnswer);
     
    }
   return SUCCESS;
@@ -127,12 +130,14 @@ public class studentbtDepthPROG
 
   public static void main(String [ ] args) {
  
-  // We will more than one test case
+  // We will have more than one test case
    
   //First test case ..empty tree
+   String treeAsString = " empty ";
+   
    BSTNode<Integer,Integer> root = null;
    
-   if (runTestCase(root)== false) return;
+   if (runTestCase(root ,treeAsString )== false) return;
    ////// End of the first test case
 
    // Second test case
@@ -142,42 +147,34 @@ public class studentbtDepthPROG
 
    root.setLeft(leftChild); 
    root.setRight(rightChild);
-
-   if (runTestCase(root)== false) return;
+   
+     
+   treeAsString = "  10\n"
+                  +" / \\ \n"
+                  +"15 20 \n ";
+ 
+   if (runTestCase(root , treeAsString)== false) return;
    ////// End of the second test case
 
 
   //Third test case
   root= null;
-  root = new BSTNode<Integer,Integer>(10,10);
-  BSTNode<Integer,Integer> currentNode= root;
-  ArrayList <BSTNode<Integer,Integer>> leftChildren = new ArrayList<BSTNode<Integer,Integer>>() ; 
-  ArrayList <BSTNode<Integer,Integer>> rightChildren = new ArrayList<BSTNode<Integer,Integer>>() ;
-
-  for (int i=0 ; i<10; i++)
-  {   
-   leftChildren.add( new BSTNode<Integer,Integer>(15,15));
-   rightChildren.add( new BSTNode<Integer,Integer>(15,15));
-  
-  }
-
-   for (int i=0 ; i<10; i++)
-  {      
-   currentNode.setLeft(leftChildren.get( i));
-   currentNode = leftChildren.get( i);
-  }
-  currentNode= root;
-
-   for (int i=0 ; i<10; i++)
-  {   
-   currentNode.setRight(rightChildren.get( i));
-   currentNode = rightChildren.get(i);
-  }
- currentNode=root;
-  if (runTestCase(root)== false) return;
+  root = new BSTNode<Integer,Integer>(5,5);
+  leftChild = new BSTNode<Integer,Integer>(25,25);
+  BSTNode<Integer,Integer> leftChild2 = new BSTNode<Integer,Integer>(30,30);
+  root.setLeft(leftChild); 
+  leftChild.setLeft(leftChild2); 
+ 
+  treeAsString = "  5\n"
+                  +" /  \n"
+                  +"25  \n "
+                +" /  \n"
+                +"30  \n ";
+                  
+  if (runTestCase(root , treeAsString)== false) return;
  ///End of the third test case
 
   // If none the test cases failed then all of them are ok then sucess=true
-  writeResult(root , true);
+  writeResult(root , true , treeAsString , 0 , 0);
 
   } 

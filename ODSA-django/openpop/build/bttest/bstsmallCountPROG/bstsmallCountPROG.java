@@ -71,36 +71,34 @@ class BSTNode implements BinNode {
 
 
 
-public class studentbtCntValPROG
+public class studentbstsmallCountPROG
 {
 
- public static int modelbtCntVal(BinNode rt , Comparable value) {
-    if (rt == null) return 0;    
-    int count = 0;
+ public static int  modelbstsmallCount(BinNode root , int key) {
+	   
+    if(root==null)
+      return 0;
     
-    if(value.compareTo(rt.element()) == 0)
-          count++;
-     count += modelbtCntVal(rt.left(), (Integer)value);
-     count += modelbtCntVal(rt.right(), (Integer)value);
-     return count;
-    
+    if((Integer)root.element() < key)
+      return 1+ modelbstsmallCount(root.left(), key) + modelbstsmallCount( root.right(), key);
+      
+    else return modelbstsmallCount(root.left(), key);
  }
 
 
 
- public static void writeResult(BinNode rt,boolean SUCCESS , String treeAsString , Comparable value , int modelAnswer, int studentAnswer ){
+  public static void writeResult(BinNode rt, boolean SUCCESS, int key, String treeAsString ,int modelAnswer, int studentAnswer ){
  try{
 
      PrintWriter output = new PrintWriter("output");
 
      if (SUCCESS) { 
-   
       output.println("Well Done!");
       output.close();
      }
     else 
     {
-     output.println("Try Again! Your answer is not correct for all test cases. For example if the given tree is: \n " + treeAsString + " and the searched value is " + (Integer)value + ", your code returns:  " + studentAnswer+ " while the expected answer is: " + modelAnswer+"."); 
+     output.println("Try Again! Your answer is not correct for all test cases. For example if the given tree is:\n " + treeAsString + " and the key is "+key+" , your code returns:  " + studentAnswer+ " while the expected answer is: " + modelAnswer);  
      output.close();
     }
   
@@ -111,12 +109,12 @@ public class studentbtCntValPROG
 
  }
  
- public static boolean runTestCase(BinNode rt , Comparable value , String treeAsString)
+ public static boolean runTestCase(BinNode rt,  int key,String treeAsString)
  { 
    boolean SUCCESS = false; 
-   int modelAnswer  = modelbtCntVal(rt, value);
-   int studentAnswer= btCntVal(rt, value);
-   if (modelAnswer  ==  studentAnswer) 
+   int modelAnswer = modelbstsmallCount(rt , key)  ;
+   int studentAnswer = bstsmallCount(rt , key); 
+   if (modelAnswer   ==  studentAnswer) 
    { 
      SUCCESS = true;   
    }
@@ -124,58 +122,62 @@ public class studentbtCntValPROG
    else  // This test case fail then will write the result and abort the function
    {
     SUCCESS = false;
-    writeResult(rt , SUCCESS ,  treeAsString , value, modelAnswer, studentAnswer);
+    writeResult(rt , SUCCESS ,  key,treeAsString, modelAnswer, studentAnswer);
     
    }
   return SUCCESS;
  }
  
-
-
   public static void main(String [ ] args) {
- 
-  // We will have more than one test case
-   String treeAsString = " empty ";
-  //First test case ..empty tree
-   BSTNode root = null;
-   Comparable value = new Integer(15);
-  
-   if (runTestCase(root , value , treeAsString ) == false) return;
-   ////// End of the first test case
-
+    
+   // First test case 
+    BSTNode root = null;
+    String treeAsString = " empty ";
+    int key = 20;
+   if (runTestCase(root , key , treeAsString) == false) return;
+   
    // Second test case
-   root = new BSTNode(10);
+   root = new BSTNode(20);
    BSTNode leftChild = new BSTNode(15);
-   BSTNode rightChild = new BSTNode(20);
+   BSTNode rightChild = new BSTNode(30);
 
    root.setLeft(leftChild); 
    root.setRight(rightChild);
    
-   treeAsString = "  10\n"
+   treeAsString = "  20\n"
                   +" / \\ \n"
-                  +"15 20 \n ";
- 
-   if (runTestCase(root , value , treeAsString )== false) return;
+                  +"15 30 \n ";
+                  
+   if (runTestCase(root , key , treeAsString )== false) return;
    ////// End of the second test case
 
 
   //Third test case
-  root= null;
-  root = new BSTNode(5);
-  leftChild = new BSTNode(15);
-  rightChild = new BSTNode(15);
-
+   key= 90;
+   root = new BSTNode(40);
+   leftChild = new BSTNode(30);
+   rightChild = new BSTNode(50);
+   
+   BSTNode leftChild2 = new BSTNode(15);
+   BSTNode rightChild2 = new BSTNode(35);
+   
    root.setLeft(leftChild); 
    root.setRight(rightChild);
- 
- treeAsString = "  5\n"
+   
+   leftChild.setLeft(leftChild2); 
+   leftChild.setRight(rightChild2);
+   
+    treeAsString = "  40\n"
                   +" / \\ \n"
-                  +"15 15 \n ";
- 
-  if (runTestCase(root , value , treeAsString ) == false) return;
- ///End of the third test case
+                  +"30 50 \n "
+                  +"/ \\ \n"
+                  +"15 35 \n ";
+   
+   
+   if (runTestCase(root , key , treeAsString )== false) return;
+  //End of the third test case
 
   // If none the test cases failed then all of them are ok then sucess=true
-  writeResult(root , true , treeAsString  , value , 0 , 0);
+  writeResult(root , true , 0, treeAsString , 0, 0);
 
   } 
