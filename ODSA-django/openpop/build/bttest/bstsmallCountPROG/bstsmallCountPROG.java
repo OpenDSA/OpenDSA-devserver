@@ -73,6 +73,38 @@ class BSTNode implements BinNode {
 
 public class studentbstsmallCountPROG
 {
+    public static  long fTimeout=1;
+    public static boolean fFinished= false;
+    public static Throwable fThrown= null;
+    public static  BinNode rtmember; 
+    public static int keymember;
+    public static int studentAnswer;
+    public static void evaluate() throws Throwable {
+	    Thread thread= new Thread() {
+		@Override
+		public void run() {
+		 try {
+		  studentAnswer = bstsmallCount(rtmember, keymember);
+		  fFinished= true;
+		 } 
+          catch (Throwable e) {
+		  fThrown= e;
+		 }
+	       }
+	 };
+	
+                thread.start();
+		thread.join(fTimeout);
+		if (fFinished)
+			return;
+		if (fThrown != null)
+			throw fThrown;
+		Exception exception= new Exception(String.format(
+				"test timed out after %d milliseconds", fTimeout));
+		exception.setStackTrace(thread.getStackTrace());
+		throw exception;
+	
+	}
 
  public static int  modelbstsmallCount(BinNode root , int key) {
 	   
@@ -111,9 +143,19 @@ public class studentbstsmallCountPROG
  
  public static boolean runTestCase(BinNode rt,  int key,String treeAsString)
  { 
+   try {
+     // Fail on time out object
+     rtmember = rt;
+     keymember = key;
+     evaluate();
+   
+    } catch(Throwable t) {
+    	
+        throw new AssertionError("You are probably having an infinite recursion! Please revise your code!");
+    }
    boolean SUCCESS = false; 
    int modelAnswer = modelbstsmallCount(rt , key)  ;
-   int studentAnswer = bstsmallCount(rt , key); 
+   //int studentAnswer = bstsmallCount(rt , key); 
    if (modelAnswer   ==  studentAnswer) 
    { 
      SUCCESS = true;   

@@ -66,13 +66,42 @@ class BSTNode implements BinNode {
   // return TRUE if a leaf node, FALSE otherwise
   public boolean isLeaf() { return (left == null) && (right == null); }
 
-
 }
-
-
 
 public class studentbtSumAllPROG
 {
+
+    public static  long fTimeout=1;
+    public static boolean fFinished= false;
+    public static Throwable fThrown= null;
+    public static  BinNode rtmember; 
+    public static int studentAnswer;
+    public static void evaluate() throws Throwable {
+	    Thread thread= new Thread() {
+		@Override
+		public void run() {
+		 try {
+		  studentAnswer = btSumAll(rtmember);
+		  fFinished= true;
+		 } 
+          catch (Throwable e) {
+		  fThrown= e;
+		 }
+	       }
+	 };
+	
+        thread.start();
+		thread.join(fTimeout);
+		if (fFinished)
+			return;
+		if (fThrown != null)
+			throw fThrown;
+		Exception exception= new Exception(String.format(
+				"test timed out after %d milliseconds", fTimeout));
+		exception.setStackTrace(thread.getStackTrace());
+		throw exception;
+	
+	}
 
  public static int modelbtSumAll(BinNode rt) {
     if (rt == null) return 0; 
@@ -106,11 +135,21 @@ public class studentbtSumAllPROG
  }
  
  public static boolean runTestCase(BinNode rt , String treeAsString)
- { 
+ {  
+
+   try {
+     // Fail on time out
+     rtmember = rt;
+     evaluate();
+   
+    } catch(Throwable t) {
+    	
+        throw new AssertionError("You are probably having an infinite recursion! Please revise your code!");
+    }
    boolean SUCCESS = false;
    
    int modelAnswer  = modelbtSumAll(rt);
-   int studentAnswer= btSumAll(rt);
+  // int studentAnswer= btSumAll(rt);
    
    if (modelAnswer  ==  studentAnswer)
    { 

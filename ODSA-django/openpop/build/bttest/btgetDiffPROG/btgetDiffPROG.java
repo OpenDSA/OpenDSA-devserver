@@ -74,6 +74,40 @@ class BSTNode implements BinNode {
 public class studentbtgetDiffPROG
 {
 
+
+    public static  long fTimeout=1;
+    public static boolean fFinished= false;
+    public static Throwable fThrown= null;
+    public static  BSTNode rtmember; 
+    public static int studentAnswer;
+    public static void evaluate() throws Throwable {
+	    Thread thread= new Thread() {
+		@Override
+		public void run() {
+		 try {
+		  studentAnswer = btgetDifference(rtmember);
+		  fFinished= true;
+		 } 
+          catch (Throwable e) {
+		  fThrown= e;
+		 }
+	       }
+	 };
+	
+        thread.start();
+		thread.join(fTimeout);
+		if (fFinished)
+			return;
+		if (fThrown != null)
+			throw fThrown;
+		Exception exception= new Exception(String.format(
+				"test timed out after %d milliseconds", fTimeout));
+		exception.setStackTrace(thread.getStackTrace());
+		throw exception;
+	
+	}
+
+
  public static int  modelbtgetDifference(BSTNode root) 
  {
 	 if (root == null)
@@ -112,9 +146,20 @@ public static void writeResult(BinNode rt,boolean SUCCESS, String treeAsString ,
  
  public static boolean runTestCase(BSTNode rt , String treeAsString)
  { 
+   
+  try {
+     // Fail on time out object
+     rtmember = rt;
+     evaluate();
+   
+    } catch(Throwable t) {
+    	
+        throw new AssertionError("You are probably having an infinite recursion! Please revise your code!");
+    }
+
    boolean SUCCESS = false; 
    int modelAnswer  = modelbtgetDifference(rt);
-   int studentAnswer= btgetDifference(rt);
+   //int studentAnswer= btgetDifference(rt);
    
    if (modelAnswer  ==  studentAnswer) 
    { 

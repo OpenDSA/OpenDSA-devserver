@@ -76,11 +76,11 @@ public class studentbtIncPROG
 {
 
     public static  long fTimeout=1;
-	public static boolean fFinished= false;
-	public static Throwable fThrown= null;
+    public static boolean fFinished= false;
+    public static Throwable fThrown= null;
     public static  BSTNode rtmember; 
 
-	public static void evaluate() throws Throwable {
+    public static void evaluate() throws Throwable {
 	    Thread thread= new Thread() {
 		@Override
 		public void run() {
@@ -138,7 +138,7 @@ public static boolean checkEqualTrees(BSTNode a, BSTNode b) {
     return true;
 }
 
- public static void writeResult(BSTNode rt,boolean SUCCESS, String treeAsString , String modelAnswer, String studentAnswer, boolean timedout ){
+ public static void writeResult(BSTNode rt,boolean SUCCESS, String treeAsString , String modelAnswer, String studentAnswer ){
  try{
 
      PrintWriter output = new PrintWriter("output");
@@ -150,15 +150,10 @@ public static boolean checkEqualTrees(BSTNode a, BSTNode b) {
      }
     else 
     {
-     if(timedout == true)
-     {
-     output.println("Try Again! Your answer is taking too long to run! Please revise your code!"); 
-     output.close();
-	 }
-	 else{
+     
      output.println("Try Again! Your answer is not correct for all test cases. For example if the given tree is:\n " + treeAsString + ", your code returns:\n  " + studentAnswer+ " \n while the expected answer is:\n " + modelAnswer); 
      output.close();
-     }
+     
     }
   
     }
@@ -170,14 +165,14 @@ public static boolean checkEqualTrees(BSTNode a, BSTNode b) {
  
  public static boolean runTestCase(BSTNode rt, BSTNode rt2 , String treeAsString , String modelAnswer)
  { 
-   boolean timedout= false;
+   
    try {
      // Fail on time out object
      rtmember = rt;
      evaluate();
    
     } catch(Throwable t) {
-    	timedout= true;
+    	
         throw new AssertionError("You are probably having an infinite recursion! Please revise your code!");
     }
    
@@ -196,7 +191,7 @@ public static boolean checkEqualTrees(BSTNode a, BSTNode b) {
     String studentAnswer ="";
     if (rt!= null)
      studentAnswer = getTreeAsaString(rt);
-    writeResult(rt , SUCCESS , treeAsString , modelAnswer , studentAnswer, timedout);
+    writeResult(rt , SUCCESS , treeAsString , modelAnswer , studentAnswer);
     
    }
   return SUCCESS;
@@ -277,6 +272,6 @@ public static boolean checkEqualTrees(BSTNode a, BSTNode b) {
   if (runTestCase(root, root2 , treeAsString , modelAnswer )== false) return;
   
   // If none the test cases failed then all of them are ok then sucess=true
- writeResult(root , true , treeAsString , "" , "" , false);
+ writeResult(root , true , treeAsString , "" , "" );
 
   } 

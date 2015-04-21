@@ -74,6 +74,39 @@ class BSTNode implements BinNode {
 public class studentbstMinPROG
 {
 
+    public static  long fTimeout=1;
+    public static boolean fFinished= false;
+    public static Throwable fThrown= null;
+    public static  BinNode rtmember; 
+    public static  BinNode studentAnswer;
+    public static void evaluate() throws Throwable {
+	    Thread thread= new Thread() {
+		@Override
+		public void run() {
+		 try {
+		  studentAnswer = bstMin(rtmember);
+		  fFinished= true;
+		 } 
+          catch (Throwable e) {
+		  fThrown= e;
+		 }
+	       }
+	 };
+	
+        thread.start();
+		thread.join(fTimeout);
+		if (fFinished)
+			return;
+		if (fThrown != null)
+			throw fThrown;
+		Exception exception= new Exception(String.format(
+				"test timed out after %d milliseconds", fTimeout));
+		exception.setStackTrace(thread.getStackTrace());
+		throw exception;
+	
+	}
+
+
  public static BinNode  modelbstMin(BinNode rt) {
 	   
    if (rt == null) 
@@ -113,10 +146,20 @@ public class studentbstMinPROG
  
  public static boolean runTestCase(BinNode rt, String treeAsString )
  { 
-   boolean SUCCESS = false;  
+   boolean SUCCESS = false;   
+   try {
+     // Fail on time out object
+     rtmember = rt;
+     evaluate();
+   
+    } catch(Throwable t) {
+    	
+        throw new AssertionError("You are probably having an infinite recursion! Please revise your code!");
+    }
+   
    if(rt== null) // A special case for this problem
    {
-	   if(bstMin(rt) == null)
+	   if(studentAnswer == null)
 	    SUCCESS = true;   
 	   else{
 	     SUCCESS = false; 
@@ -124,17 +167,29 @@ public class studentbstMinPROG
 	 } 
    }
    
-   else if ((Integer)bstMin(rt).element()  == (Integer)modelbstMin(rt).element() ) 
+   else 
    { 
-     SUCCESS = true;   
+    try {
+     // Fail on time out object
+     rtmember = rt;
+     evaluate();
+   
+    } catch(Throwable t) {
+    	
+        throw new AssertionError("You are probably having an infinite recursion! Please revise your code!");
+    }
+
+    if ((Integer)studentAnswer.element()  == (Integer)modelbstMin(rt).element() ) 
+      SUCCESS = true;   
+    else  // This test case fail then will write the result and abort the function
+    {
+     SUCCESS = false;
+     writeResult(rt , SUCCESS ,  treeAsString , " "+(Integer)modelbstMin(rt).element()+" "," "+(Integer)bstMin(rt).element()+" ");
+    
+    }
    }
   
-   else  // This test case fail then will write the result and abort the function
-   {
-    SUCCESS = false;
-    writeResult(rt , SUCCESS ,  treeAsString , " "+(Integer)modelbstMin(rt).element()+" "," "+(Integer)bstMin(rt).element()+" ");
-    
-   }
+   
   return SUCCESS;
  }
  

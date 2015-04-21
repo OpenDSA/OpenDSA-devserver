@@ -73,6 +73,40 @@ class BSTNode implements BinNode {
 
 public class studentbtCheckValPROG
 {
+    public static  long fTimeout=1;
+    public static boolean fFinished= false;
+    public static Throwable fThrown= null;
+    public static  BinNode rtmember; 
+    public static  Comparable valuemember;
+    public static boolean studentAnswer;
+    public static void evaluate() throws Throwable {
+	    Thread thread= new Thread() {
+		@Override
+		public void run() {
+		 try {
+		  studentAnswer = btCheckVal(rtmember, valuemember);
+		  fFinished= true;
+		 } 
+          catch (Throwable e) {
+		  fThrown= e;
+		 }
+	       }
+	 };
+	
+        thread.start();
+		thread.join(fTimeout);
+		if (fFinished)
+			return;
+		if (fThrown != null)
+			throw fThrown;
+		Exception exception= new Exception(String.format(
+				"test timed out after %d milliseconds", fTimeout));
+		exception.setStackTrace(thread.getStackTrace());
+		throw exception;
+	
+	}
+
+
 
   public static boolean modelbtCheckVal(BinNode rt , Comparable value) {
     if (rt == null) return false; 
@@ -113,9 +147,21 @@ public class studentbtCheckValPROG
  
  public static boolean runTestCase(BinNode rt , Comparable value , String treeAsString)
  { 
+
+  try {
+     // Fail on time out object
+     rtmember = rt;
+     valuemember= value;
+     evaluate();
+   
+    } catch(Throwable t) {
+    	
+        throw new AssertionError("You are probably having an infinite recursion! Please revise your code!");
+    }
+
    boolean SUCCESS = false; 
    boolean modelAnswer  = modelbtCheckVal(rt, value);
-   boolean studentAnswer= btCheckVal(rt, value);
+   //boolean studentAnswer= btCheckVal(rt, value);
    if (modelAnswer  ==  studentAnswer) 
    { 
      SUCCESS = true;   

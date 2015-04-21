@@ -74,6 +74,38 @@ class BSTNode implements BinNode {
 public class studentbtcheckSumPROG
 {
 
+    public static  long fTimeout=1;
+    public static boolean fFinished= false;
+    public static Throwable fThrown= null;
+    public static  BinNode rtmember; 
+    public static boolean studentAnswer;
+    public static void evaluate() throws Throwable {
+	    Thread thread= new Thread() {
+		@Override
+		public void run() {
+		 try {
+		  studentAnswer = btcheckSum(rtmember);
+		  fFinished= true;
+		 } 
+          catch (Throwable e) {
+		  fThrown= e;
+		 }
+	       }
+	 };
+	
+        thread.start();
+		thread.join(fTimeout);
+		if (fFinished)
+			return;
+		if (fThrown != null)
+			throw fThrown;
+		Exception exception= new Exception(String.format(
+				"test timed out after %d milliseconds", fTimeout));
+		exception.setStackTrace(thread.getStackTrace());
+		throw exception;
+	
+	}
+
  public static boolean  modelbtcheckSum(BinNode root) 
  {
 	 int leftValue,rightValue;
@@ -113,7 +145,7 @@ public class studentbtcheckSumPROG
      }
     else 
     {
-      output.println("Try Again! Your answer is not correct for all test cases. For example if the given tree is:\n " + treeAsString + ", your code returns:  \n" + studentAnswer+ " while the expected answer is: " + modelAnswer);     
+      output.println("Try Again! Your answer is not correct for all test cases. For example if the given tree is:\n " + treeAsString + ", your code returns:  " + studentAnswer+ " while the expected answer is: " + modelAnswer);     
       output.close();
     }
   
@@ -126,9 +158,18 @@ public class studentbtcheckSumPROG
  
  public static boolean runTestCase(BSTNode rt , String treeAsString)
  { 
+    try {
+     // Fail on time out object
+     rtmember = rt;
+     evaluate();
+   
+    } catch(Throwable t) {
+    	
+        throw new AssertionError("You are probably having an infinite recursion! Please revise your code!");
+    }
    boolean SUCCESS = false;  
    boolean modelAnswer  = modelbtcheckSum(rt);
-   boolean studentAnswer= btcheckSum(rt);
+  // boolean studentAnswer= btcheckSum(rt);
    if (modelAnswer  ==  studentAnswer) 
    { 
      SUCCESS = true;   

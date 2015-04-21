@@ -71,6 +71,40 @@ class BSTNode<Key, E> implements BinNode<E> {
 public class studentbtLeafPROG
 {
 
+
+    public static  long fTimeout=1;
+    public static boolean fFinished= false;
+    public static Throwable fThrown= null;
+    public static  BinNode rtmember; 
+    public static int studentAnswer;
+    public static void evaluate() throws Throwable {
+	    Thread thread= new Thread() {
+		@Override
+		public void run() {
+		 try {
+		  studentAnswer = btcountLeaf(rtmember);
+		  fFinished= true;
+		 } 
+          catch (Throwable e) {
+		  fThrown= e;
+		 }
+	       }
+	 };
+	
+        thread.start();
+		thread.join(fTimeout);
+		if (fFinished)
+			return;
+		if (fThrown != null)
+			throw fThrown;
+		Exception exception= new Exception(String.format(
+				"test timed out after %d milliseconds", fTimeout));
+		exception.setStackTrace(thread.getStackTrace());
+		throw exception;
+	
+	}
+
+
  public static int modelbtcountLeaf(BinNode root) {
   if(root == null)  return 0;
   if(root.isLeaf())      
@@ -82,7 +116,7 @@ public class studentbtLeafPROG
 
 
 
- public static void writeResult(BinNode rt,boolean SUCCESS , String treeAsString , int modelAnswer, int studentAnswer ){
+ public static void writeResult(BinNode rt,boolean SUCCESS , String treeAsString , int modelAnswer, int studentAnswer){
  try{
 
      PrintWriter output = new PrintWriter("output");
@@ -107,10 +141,20 @@ public class studentbtLeafPROG
  
  public static boolean runTestCase(BinNode rt , String treeAsString)
  { 
+   try {
+     // Fail on time out object
+     rtmember = rt;
+     evaluate();
+   
+    } catch(Throwable t) {
+    	
+        throw new AssertionError("You are probably having an infinite recursion! Please revise your code!");
+    }
+
    boolean SUCCESS = false;
    
    int modelAnswer  = modelbtcountLeaf(rt);
-   int studentAnswer= btcountLeaf(rt);
+   
    
    if (modelAnswer  ==  studentAnswer)
    { 

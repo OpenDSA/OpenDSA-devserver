@@ -73,7 +73,38 @@ class BSTNode implements BinNode {
 
 public class studentmbtSamePROG
 {
-
+    public static  long fTimeout=1;
+    public static boolean fFinished= false;
+    public static Throwable fThrown= null;
+    public static  BSTNode rtmember; 
+    public static  BSTNode rtmember2; 
+    public static boolean studentAnswer;
+    public static void evaluate() throws Throwable {
+	    Thread thread= new Thread() {
+		@Override
+		public void run() {
+		 try {
+		  studentAnswer = btIdenticalTrees(rtmember , rtmember2);;
+		  fFinished= true;
+		 } 
+                 catch (Throwable e) {
+		  fThrown= e;
+		 }
+	       }
+	 };
+	
+        thread.start();
+		thread.join(fTimeout);
+		if (fFinished)
+			return;
+		if (fThrown != null)
+			throw fThrown;
+		Exception exception= new Exception(String.format(
+				"test timed out after %d milliseconds", fTimeout));
+		exception.setStackTrace(thread.getStackTrace());
+		throw exception;
+	
+	}
  
  public static boolean modelmbtSame(BSTNode a, BSTNode b) {
     // check for reference equality and nulls
@@ -120,9 +151,18 @@ public class studentmbtSamePROG
  
  public static boolean runTestCase(BSTNode rt, BSTNode rt2, String tree1AsString , String tree2AsString)
  { 
+     try {
+     // Fail on time out object
+     rtmember = rt;
+     rtmember2 = rt2;
+     evaluate();
+    } 
+    catch(Throwable t) {	
+     throw new AssertionError("You are probably having an infinite recursion! Please revise your code!");
+    }
    boolean SUCCESS = false;
    boolean modelAnswer  = modelmbtSame(rt, rt2);
-   boolean studentAnswer= btIdenticalTrees(rt , rt2); 
+   //boolean studentAnswer= btIdenticalTrees(rt , rt2); 
    
    if (modelAnswer  ==  studentAnswer)  
    { 
