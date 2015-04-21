@@ -236,8 +236,8 @@ def assessprogkaex(data, testfoldername, testfilenamep, generatedList, checkDefi
     proc1 = subprocess.Popen(" cd "+ peruserFilesPath +"; javac "+studentfilename+" 2> "+peruserFilesPath + "compilationerrors.out ; java -Djava.security.manager -Djava.security.policy==newpolicy.policy student"+testfilenamep+" 2> " + peruserFilesPath +"runerrors.out", stdout=subprocess.PIPE, shell=True)
    
     
-    time.sleep(3) #Should change in the next push that to be in the java files instead of sleeping here
-    os.system("kill -9 "+ str(proc1.pid) )
+    time.sleep(2) #Should change in the next push that to be in the java files instead of sleeping here
+    #os.system("kill -9 "+ str(proc1.pid) )
 
     print data
     # Read the success file if has Success inside then "Well Done!" Otherwise "Try Again!"
@@ -279,15 +279,15 @@ def assessprogkaex(data, testfoldername, testfilenamep, generatedList, checkDefi
               elif 'NullPointerException' in line and progexType == "binarytree":
 		 feedback[1]= ["Try Again! You are trying to access a null node. You have forgotten to check if the node is null before accessing it. Have you checked if the root is null or not? if yes then ask your self the next question: are you trying to access the root's left or right children before the recursive call? You may need to revise your code and check if the solution really need to do that. If you have to get the value of one or both of the children before the recursive call then make sure to check if they are null or not."]
 		 #return feedback
-	      elif 'Exception in thread "main"' in line:
+	      
+              elif 'infinite recursion' in line:
+                 feedback[1]= ["Try Again! You are probably having an infinite recursion! Please revise your code!"]
+                 os.system("pkill -TERM -P"+ str(proc1.pid) ) # terminate all the processes because we need to terminate the thread as well
+                 return feedback , peruserFilesPath
+              elif 'Exception in thread "main"' in line:
 		 feedback[1]= ["Try Again! Your solution leads to "+ line.replace("Exception in thread \"main\" java.lang.", "")]
                  return feedback , peruserFilesPath
-              
-              #elif 'Exception in thread "main" java.lang.ArithmeticException: / by zero' in line:
-				#  feedback[1]= ["Try Again! Your solution leads to divide by zero exception!"]
-				#  return feedback
 
-				       
           runErrorFile.close()
           if os.stat(peruserFilesPath+'runerrors.out')[6]!=0:
              return feedback, peruserFilesPath
@@ -319,7 +319,7 @@ def assessprogkaex(data, testfoldername, testfilenamep, generatedList, checkDefi
               feedback[0] = False
               return feedback , peruserFilesPath
 
-    feedback[1]=['Try Again! Your code is taking too long to run! Revise your code!']
+    feedback[1]=['Try Again Later!']
     return feedback , peruserFilesPath
 
                 
