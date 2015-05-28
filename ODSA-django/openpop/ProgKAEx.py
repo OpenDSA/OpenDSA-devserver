@@ -155,6 +155,9 @@ def setparameters(exerciseName, data, generatedList, checkDefinedvar, listoftype
     # Recursion programming exercises have the same folder with different subfolders. Where the subfolder is the exercise name
     elif "recursion" in progexType:   
        feedback, peruserFilesPath= assessprogkaex(data,"rectest/"+exerciseName, exerciseName,"",checkDefinedvar , listoftypes , progexType, user_data)
+
+    elif "pointers" in progexType:   
+       feedback, peruserFilesPath= assessprogkaex(data,"pntrtest/"+exerciseName, exerciseName,"",checkDefinedvar , listoftypes , progexType, user_data)
     return feedback, peruserFilesPath   
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
